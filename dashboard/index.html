@@ -1,15 +1,72 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Token Radar — pre-token protocols ranked by implied value</title>
-    <link rel="stylesheet" href="app.css">
-  </head>
-  <body>
-    <a class="skip-link" href="#board">Skip to the board</a>
-    <main id="board" tabindex="-1" aria-busy="true"></main>
-    <script src="../data.js"></script>
-    <script src="app.js"></script>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — protocols that record no token, ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <p class="kicker">DefiLlama snapshot &middot; <span id="asof"></span></p>
+  <h1>Token Radar</h1>
+  <p class="lede">201 protocols that record no token, ranked by what a token would be worth if their record stayed as it is. Not a prediction of whether or when one is issued.</p>
+  <p class="model" id="model"></p>
+</header>
+
+<main>
+  <section class="controls" aria-label="Filter and sort">
+    <label>Search <input id="q" type="search" placeholder="Protocol name or slug" autocomplete="off"></label>
+    <label>Category <select id="cat"><option value="">All categories</option></select></label>
+    <label>Chain <select id="chain"><option value="">All chains</option></select></label>
+    <label>Sort <select id="sort">
+      <option value="rank">Rank (implied value)</option>
+      <option value="tvl">TVL, high to low</option>
+      <option value="growth">7-day change, high to low</option>
+      <option value="age">Oldest first</option>
+      <option value="name">Name A to Z</option>
+    </select></label>
+    <p class="count" id="count"></p>
+  </section>
+
+  <section class="board-wrap">
+    <table id="board">
+      <thead>
+        <tr>
+          <th class="num">#</th>
+          <th>Protocol</th>
+          <th>Category</th>
+          <th>Chains</th>
+          <th class="num">TVL</th>
+          <th class="num">7d</th>
+          <th class="num">Age</th>
+          <th class="num">Implied value</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="empty" id="empty" hidden>No protocol matches this filter.</p>
+  </section>
+
+  <section class="detail" id="detail" hidden>
+    <button class="close" id="close-detail" type="button">Back to the board</button>
+    <h2 id="d-name"></h2>
+    <dl class="facts" id="d-facts"></dl>
+    <h3>Why this rank</h3>
+    <p id="d-why"></p>
+    <h3>How to farm it</h3>
+    <ol class="steps" id="d-steps"></ol>
+    <p class="note">This protocol records no token in the snapshot. That is not proof it has none.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Value model: implied value = TVL &times; 0.50 &times; (1 + 7-day change, clamped to &minus;15% / +40%) &times; (1 + years listed, capped at 3, &times; 0.10). A launch is priced near half the value the protocol already secures; growth bends it, a longer track record adds a little.</p>
+  <p>Coverage: every protocol on the snapshot's watchlist is on this board, plus 161 more below the $50M floor that pass the same rule. Centralised exchanges, bridges, liquid staking and restaking products, wrapped or staked products, and versioned names are left out: they are products of a token that already trades, not protocols waiting for one.</p>
+  <p>Source: <span id="source"></span>. Farm steps are the entry's own plan, not the protocol's promise.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
 </html>
