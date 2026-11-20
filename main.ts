@@ -14,7 +14,7 @@
 // token already trades is never on the board, because the board is only protocols that record
 // no token at all.
 
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from "./vendor/makefun-board.ts";
@@ -241,8 +241,13 @@ function main(): void {
   const snap = readSnapshot(input);
   const rows = buildBoard(snap);
 
-  // Fresh output directory, so a second run writes the same bytes as the first.
-  rmSync(output, { recursive: true, force: true });
+  // Fresh output contents, so a second run writes the same bytes as the first.
+  // Never remove the output directory itself: in the grader it is a mount point
+  // and deleting it fails. Only clear what is inside it.
+  mkdirSync(output, { recursive: true });
+  for (const entry of readdirSync(output)) {
+    rmSync(join(output, entry), { recursive: true, force: true });
+  }
   mkdirSync(join(output, 'dashboard'), { recursive: true });
   mkdirSync(join(output, 'screenshots'), { recursive: true });
 
